@@ -8,56 +8,75 @@ from google.cloud import storage
 from google.cloud import dataproc_v1 as dataproc
 
 
-resultat_timer = ""
+resultat_timer_pig = ""
+resultat_timer_pyspark = ""
+
+bucket = "gs://bigdata_cdl/"
+region = "europe-central2"
+projetId = "bigdata-401112"
+clusterName = "pagerank"
+
 
 def files_copy():
     ## copy data
-    command_copy_data = "gsutil cp small_page_links.nt gs://bigdata_cdl/"
+    command_copy_data = "gsutil cp small_page_links.nt %s " % (bucket, )
     subprocess.run([command_copy_data], shell=True)
 
     ## copy pig code
-    command_copy_pig_pagerank = "gsutil cp pagerank.py gs://bigdata_cdl/"
+    command_copy_pig_pagerank = "gsutil cp pagerank_pig.py %s " % (bucket, )
     subprocess.run([command_copy_pig_pagerank], shell=True)
 
+    ## copy pig code
+    command_copy_pig_pagerank = "gsutil cp pagerank_pyspark.py %s " % (bucket, )
+    subprocess.run([command_copy_pig_pagerank], shell=True)
+
+    ## copy pig code
+    command_copy_pyspark_pagerank = "gsutil cp pagerank-notype.py %s " % (bucket, )
+    subprocess.run([command_copy_pyspark_pagerank], shell=True)
+    
     ## Clean out directory
-    command_delete_out_directory = "gsutil rm -rf gs://bigdata_cdl/out"
+    command_delete_out_directory = "gsutil rm -rf %sout" % (bucket, )
     subprocess.run([command_delete_out_directory], shell=True)
 
-def create_cluster(number_worker):    
-    command_create_cluster = "gcloud dataproc clusters create cluster-a35a --enable-component-gateway --region europe-central2 --zone europe-central2-c --master-machine-type n1-standard-4 --master-boot-disk-size 500 --num-workers %s --worker-machine-type n1-standard-4 --worker-boot-disk-size 500 --image-version 2.0-debian10 --project bigdata-401112" % (number_worker, )
-    
-    subprocess.run(command_create_cluster, shell=True)
-
-def create_cluster_python(): # Create the cluster client.
+def run_cluster_python(number_node): # Create the cluster client.
     cluster_client = dataproc_v1.ClusterControllerClient(
-        client_options={"api_endpoint": f"europe-central2-dataproc.googleapis.com:443"}
+        client_options={"api_endpoint": "%s-dataproc.googleapis.com:443" % (region, )}
     )
 
     # Create the cluster config.
     cluster = {
-        "project_id": "bigdata-401112",
-        "cluster_name": "pagerank",
+        "project_id": projetId,
+        "cluster_name": clusterName,
         "config": {
-            "master_config": {"num_instances": 1, "machine_type_uri": "n1-standard-2"},
-            "worker_config": {"num_instances": 3, "machine_type_uri": "n1-standard-2"},
+            "master_config": {"num_instances": 1, "machine_type_uri": "n1-standard-4"},
+            "worker_config": {"num_instances": number_node, "machine_type_uri": "n1-standard-4"},
         },
     }
 
     # Create the cluster.
     operation = cluster_client.create_cluster(
-        request={"project_id": "bigdata-401112", "region": "europe-central2", "cluster": cluster}
+        request={"project_id": projetId, "region": region, "cluster": cluster}
     )
     result = operation.result()
 
-def delete_cluster():
-    commande_delete_cluster = "gcloud dataproc clusters delete pagerank --region europe-central2"
+    print(f"Cluster created successfully: {result.cluster_name}")
 
-    subprocess.run([commande_delete_cluster], shell=True)
-    
+    execute_pagerank_pig()
+    execute_pagerank_pyspark()
 
+    operation = cluster_client.delete_cluster(
+        request={
+            "project_id": projetId,
+            "region": region,
+            "cluster_name": clusterName,
+        }
+    )
+    operation.result()
+
+    print(f"Cluster {clusterName} successfully deleted.")
 
 def execute_pagerank_pig():
-    command_jobs_pagerank = "gcloud dataproc jobs submit pig --region europe-west1 --cluster cluster-a35a -f gs://bigdata_cdl/pagerank.py"
+    command_jobs_pagerank = "gcloud dataproc jobs submit pig --region %s --cluster %s -f %spagerank_pig.py" % (region, clusterName, bucket, )
 
     start = time.time()    
     subprocess.run([command_jobs_pagerank], shell=True)
@@ -65,63 +84,45 @@ def execute_pagerank_pig():
 
     result = end - start
 
-    global resultat_timer 
-    resultat_timer = result
+    global resultat_timer_pig 
+    resultat_timer_pig = result
 
-def execute_pagerank_python_pig():
-    # Create the job client.
-    job_client = dataproc_v1.JobControllerClient(
-        client_options={"api_endpoint": f"europe-central2-dataproc.googleapis.com:443"}
-    )
+    print(f"Job PIG finished successfully\n")
 
-    # Create the job config.
-    job = {
-        "placement": {"cluster_name": "pagerank"},
-        "pyspark_job": {"main_python_file_uri": f"gs://bigdata_cdl/pagerank.py"},
-    }
+def execute_pagerank_pyspark():
+    command_jobs_pagerank = "gcloud dataproc jobs submit pyspark --region %s --cluster %s %spagerank_pyspark.py  -- %spagerank_pyspark.py 3" % (region, clusterName, bucket, bucket, )
 
-    start = time.time()
-
-    operation = job_client.submit_job_as_operation(
-        request={"project_id": "bigdata-401112", "region": "europe-central2", "job": job}
-    )
-
-    #response = operation.result()
-
+    start = time.time()    
+    subprocess.run([command_jobs_pagerank], shell=True)
     end = time.time()
 
     result = end - start
 
-    global resultat_timer 
-    resultat_timer = result
+    global reulstat_timer_pyspark 
+    reulstat_timer_pyspark = result
 
-    print(resultat_timer)
+    print(f"Job Pyspark finished successfully\n")
 
-
-def write_result(result_time):
+def write_space():
     file = open("resultat.txt", "a")
-    file.write("resultat PIG : %s\n" % (result_time, ))
+    file.write("--------------------------------------------------------------------------------------\n")
+    file.close()
+    
+def write_result(result_time, pig, num_node):
+    file = open("resultat.txt", "a")
+    if (pig == True):
+        file.write("resultat PIG %s nodes : %s\n" % (num_node, result_time, ))
+    else:
+        file.write("resultat Pyspark %s nodes : %s\n" % (num_node, result_time, ))
     file.close()
 
 def run_main():
     files_copy()
-    iteration = [1]
+    iteration = [2]
     for it in iteration:
-        create_cluster(it)
-        execute_pagerank_pig()
-        write_result(resultat_timer)
-        delete_cluster()
+        run_cluster_python(it)
+        write_space()
+        write_result(resultat_timer_pig, True, it)
+        write_result(resultat_timer_pyspark, False, it)
 
-def run_main_python():
-    files_copy()
-    iteration = [1]
-    for it in iteration:
-        create_cluster_python()
-        execute_pagerank_python_pig()
-        write_result(resultat_timer)
-        delete_cluster()
-
-#run_main_python()
-
-#create_cluster_python()
-execute_pagerank_python_pig()
+run_main()
