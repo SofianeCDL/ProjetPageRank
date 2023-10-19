@@ -125,7 +125,7 @@ def write_result(result_time, pig, num_node):
 
 def run_main():
     files_copy()
-    iteration = [2]
+    iteration = [4]
     for it in iteration:
         run_cluster_python(it)
         write_space()
