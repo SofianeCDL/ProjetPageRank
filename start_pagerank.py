@@ -15,12 +15,10 @@ bucket = "gs://bigdata_cdl/"
 region = "europe-central2"
 projetId = "bigdata-401112"
 clusterName = "pagerank"
+typeData = "small_page_links.nt"
 
 
 def files_copy():
-    ## copy data
-    command_copy_data = "gsutil cp small_page_links.nt %s " % (bucket, )
-    subprocess.run([command_copy_data], shell=True)
 
     ## copy pig code
     command_copy_pig_pagerank = "gsutil cp pagerank_pig.py %s " % (bucket, )
@@ -28,6 +26,10 @@ def files_copy():
 
     ## copy pig code
     command_copy_pig_pagerank = "gsutil cp pagerank_pyspark.py %s " % (bucket, )
+    subprocess.run([command_copy_pig_pagerank], shell=True)
+
+    ## copy pig code
+    command_copy_pig_pagerank = "gsutil cp pagerank_test.py %s " % (bucket, )
     subprocess.run([command_copy_pig_pagerank], shell=True)
 
     ## copy pig code
@@ -61,11 +63,15 @@ def run_cluster_python(number_node): # Create the cluster client.
 
     print(f"Cluster created successfully: {result.cluster_name}")
 
-    execute_pagerank_pig()
-    execute_pagerank_pyspark()
+
+    global resultat_timer_pig 
+    resultat_timer_pig = execute_pagerank_pig()
+
+    global resultat_timer_pyspark
+    #resultat_timer_pyspark = execute_pagerank_pyspark()
 
     operation = cluster_client.delete_cluster(
-        request={
+    request={
             "project_id": projetId,
             "region": region,
             "cluster_name": clusterName,
@@ -84,24 +90,24 @@ def execute_pagerank_pig():
 
     result = end - start
 
-    global resultat_timer_pig 
-    resultat_timer_pig = result
 
-    print(f"Job PIG finished successfully\n")
+    print(f"Job PIG finished successfully : {result} \n")
+
+    return result
 
 def execute_pagerank_pyspark():
-    command_jobs_pagerank = "gcloud dataproc jobs submit pyspark --region %s --cluster %s %spagerank_pyspark.py  -- %spagerank_pyspark.py 3" % (region, clusterName, bucket, bucket, )
+    command_jobs_pagerank = "gcloud dataproc jobs submit pyspark --region %s --cluster %s %spagerank_test.py  -- gs://public_lddm_data/%s 3" % (region, clusterName, bucket, typeData, )
 
     start = time.time()    
     subprocess.run([command_jobs_pagerank], shell=True)
     end = time.time()
 
+
     result = end - start
 
-    global reulstat_timer_pyspark 
-    reulstat_timer_pyspark = result
+    print(f"Job Pyspark finished successfully : {result} \n")
 
-    print(f"Job Pyspark finished successfully\n")
+    return result
 
 def write_space():
     file = open("resultat.txt", "a")
@@ -109,6 +115,7 @@ def write_space():
     file.close()
     
 def write_result(result_time, pig, num_node):
+
     file = open("resultat.txt", "a")
     if (pig == True):
         file.write("resultat PIG %s nodes : %s\n" % (num_node, result_time, ))

@@ -26,6 +26,7 @@ import re
 import sys
 from operator import add
 from typing import Iterable, Tuple
+import logging
 
 from pyspark.resultiterable import ResultIterable
 from pyspark.sql import SparkSession
@@ -68,7 +69,7 @@ if __name__ == "__main__":
     #     URL         neighbor URL
     #     ...
     lines = spark.read.text(sys.argv[1]).rdd.map(lambda r: r[0])
-
+    
     # Loads all URLs from input file and initialize their neighbors.
     links = lines.map(lambda urls: parseNeighbors(urls)).distinct().groupByKey().cache()
 

@@ -25,13 +25,13 @@ bin/spark-submit examples/src/main/python/pagerank.py data/mllib/pagerank_data.t
 import re
 import sys
 from operator import add
-from typing import Iterable, Tuple
+from typing import Iterable, Tuple, List
 
 from pyspark.resultiterable import ResultIterable
 from pyspark.sql import SparkSession
 
 
-def computeContribs(urls: ResultIterable[str], rank: float) -> Iterable[Tuple[str, float]]:
+def computeContribs(urls: List[str], rank: float) -> Iterable[Tuple[str, float]]:
     """Calculates URL contributions to the rank of other URLs."""
     num_urls = len(urls)
     for url in urls:
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # Initialize the spark context.
     spark = SparkSession\
         .builder\
-        .appName("PythonPageRank")\
+        .appName("ProjetPageRank")\
         .getOrCreate()
 
     # Loads in input file. It should be in format of:
@@ -68,6 +68,8 @@ if __name__ == "__main__":
 
     # Loads all URLs from input file and initialize their neighbors.
     links = lines.map(lambda urls: parseNeighbors(urls)).distinct().groupByKey().cache()
+
+    
 
     # Loads all URLs with other URL(s) link to from input file and initialize ranks of them to one.
     ranks = links.map(lambda url_neighbors: (url_neighbors[0], 1.0))
