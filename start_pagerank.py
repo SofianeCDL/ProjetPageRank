@@ -15,7 +15,7 @@ bucket = "gs://bigdata_cdl/"
 region = "europe-central2"
 projetId = "bigdata-401112"
 clusterName = "pagerank"
-typeData = "small_page_links.nt"
+typeData = "page_links_en.nt.bz2"
 
 
 def files_copy():
@@ -68,7 +68,7 @@ def run_cluster_python(number_node): # Create the cluster client.
     resultat_timer_pig = execute_pagerank_pig()
 
     global resultat_timer_pyspark
-    #resultat_timer_pyspark = execute_pagerank_pyspark()
+    resultat_timer_pyspark = execute_pagerank_pyspark()
 
     operation = cluster_client.delete_cluster(
     request={
