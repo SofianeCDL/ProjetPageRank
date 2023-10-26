@@ -83,14 +83,14 @@ if __name__ == "__main__":
     ranks = links.map(lambda url_neighbors: (url_neighbors[0], 1.0))
 
     #using default portable hash on key and default number of partitions
-    #https://spark.apache.org/docs/latest/api/python/_modules/pyspark/rdd.html#RDD.partitionBy
     if (partition):
-        links = links.partitionBy(numPartitions = None)
+        links = links.partitionBy(links.getNumPartitions())
+        ranks = ranks.partitionBy(links.getNumPartitions())
 
     # Calculates and updates URL ranks continuously using PageRank algorithm.
     for iteration in range(int(sys.argv[2])):
         if (partition):
-            ranks = ranks.partitionBy(numPartitions = None)
+            ranks = ranks.partitionBy(links.getNumPartitions())
 
         # Calculates URL contributions to the rank of other URLs.
         contribs = links.join(ranks).flatMap(lambda url_urls_rank: computeContribs(

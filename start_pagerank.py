@@ -40,6 +40,26 @@ def files_copy():
     command_delete_out_directory = "gsutil rm -rf %sout" % (bucket, )
     subprocess.run([command_delete_out_directory], shell=True)
 
+def create_cluster(number_worker):
+    command_create_cluster = "gcloud dataproc clusters create %s --enable-component-gateway --region %s --zone %s-c --master-machine-type n1-standard-4 --master-boot-disk-size 500 --num-workers %s --worker-machine-type n1-standard-4 --worker-boot-disk-size 500 --image-version 2.0-debian10 --project bigdata-401112" % (clusterName, region, region, number_worker, )
+    print(command_create_cluster)
+    subprocess.run([command_create_cluster], shell=True)
+
+def delete_cluster():
+    command_delete_cluster = "gcloud dataproc clusters delete %s --region %s --quiet" % (clusterName, region, )
+    subprocess.run([command_delete_cluster], shell=True)
+
+def run_cluster(number_worker):
+    create_cluster(number_worker)
+
+    global resultat_timer_pig 
+    resultat_timer_pig = execute_pagerank_pig()
+
+    global resultat_timer_pyspark
+    #resultat_timer_pyspark = execute_pagerank_pyspark()
+
+    delete_cluster()
+
 def run_cluster_python(number_node): # Create the cluster client.
     cluster_client = dataproc_v1.ClusterControllerClient(
         client_options={"api_endpoint": "%s-dataproc.googleapis.com:443" % (region, )}
@@ -122,12 +142,11 @@ def write_result(result_time, pig, num_node):
     else:
         file.write("resultat Pyspark %s nodes : %s\n" % (num_node, result_time, ))
     file.close()
-
 def run_main():
     files_copy()
     iteration = [4]
     for it in iteration:
-        run_cluster_python(it)
+        run_cluster(it)
         write_space()
         write_result(resultat_timer_pig, True, it)
         write_result(resultat_timer_pyspark, False, it)
