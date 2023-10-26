@@ -43,7 +43,7 @@ Ces objectifs aideront à évaluer l'efficacité des implémentations PageRank s
 
 Les fichiers sources : https://github.com/momo54/large_scale_data_management
 
-## 1 - Configuraion
+# 1 - Configuration
 
 Afin d'évaluer les performances entre les implémentations Pig et PySpark, nous avons utilisé le service d'exécution de tâches Dataproc de la suite Google Cloud. NOus avons décidé d'utiliser Python pour réaliser notre projet. Aussi nous avons comme fichiers : 
 
@@ -61,7 +61,7 @@ Les données d'entrées finales sont **A COMPLETER**
 **Licences** : http://www.apache.org/licenses/LICENSE-2.0 pour PySpark.
 
 
-## 2. Tests préliminaires
+# 2. Tests préliminaires
 Execution des tests préliminaire avec les commandes :
 
 ```bash
@@ -103,7 +103,7 @@ On s'attend ainsi, pour le fichier de 800mo à constater une différence bien su
 
 
 
-## 2. Tests finaux
+# 3. Tests finaux
 
 Nous avons testés avec le fichier ???? 
 
@@ -140,7 +140,7 @@ Efficacité : Pig, en revanche, est notablement plus lent avec un temps d'exécu
 
 
 
-## 4. Observation
+# 4. Observation
 
 ##### **A COMPLETER + FAIRE GRAPHIQUE**
 
@@ -148,7 +148,7 @@ Efficacité : Pig, en revanche, est notablement plus lent avec un temps d'exécu
 Pig, en revanche, s'est avéré plus simple à utiliser et à comprendre pour les utilisateurs familiarisés avec SQL et le langage Pig Latin.
 
 
-## Conclusion finale 
+# Conclusion finale 
 
 ##### **A COMPLETER**
 
