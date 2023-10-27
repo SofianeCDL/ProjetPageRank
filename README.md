@@ -79,7 +79,21 @@ Avec comme paramètres prédéfinis dans le code :
 Résultats : 
 
 Visible en brut sous format txt au lancement du programme dans le fichier *result_data.txt*. 
-Les configurations de bases étant fixées à 2, 4 et 5 noeud avec *lddm_data/small_page_links.nt 3* comme jeu de données. 
+Les configurations de bases étant fixées à 2 noeuds avec *lddm_data/small_page_links.nt 3* comme jeu de données. 
+
+
+Comparaison préliminaire : 
+
+Les résultats préliminaires de ce benchmark indiquent que Spark, face à Pig, a montré des performances supérieures en termes de temps de calcul.
+En effet, prenons par exemple deux noeuds, PySpark avec 38.01116800308227	et Pig avec 191.1238124370575s. PySpark est 80% fois plus rapide que Pig. 
+
+On s'attend ainsi, pour le fichier de 800mo à constater une différence bien supérieurs entre PySpark et Pig.
+
+
+
+# 3. Tests finaux
+
+Nous avons testés avec le fichier de grande taille, 800mo. Cette fois-ci, on joute également la version de PySpark avec partitionnement.
 
 | Pig | Nombre de noeuds |   
 | :-------- | :------------------------- |
@@ -100,56 +114,14 @@ Les configurations de bases étant fixées à 2, 4 et 5 noeud avec *lddm_data/sm
 | `31 min 03 s`   |6 |
 
 
-Comparaison préliminaire : 
-
-Les résultats préliminaires de ce benchmark indiquent que Spark, face à Pig, a montré des performances supérieures en termes de temps de calcul.
-En effet, prenons par exemple deux noeuds, PySpark est 80% fois plus rapide que Pig. 
-
-On s'attend ainsi, pour le fichier de 800mo à constater une différence bien supérieurs entre PySpark et Pig.
-
-
-
-# 3. Tests finaux
-
-Nous avons testés avec le fichier ???? 
-
-| Pig | Nombre de noeuds      | En-tête
-| :-------- | :------------------------- | :------- |
-| **A COMPLETER** |2 |**A COMPLETER** |
-| **A COMPLETER** | 4 | |
-| **A COMPLETER** | 6 | |
-
-| Spark     | Nombre de noeuds      | En-tête
-| :------- | :------------------------- | :------- |
-| **A COMPLETER** |2 |**A COMPLETER** |
-| **A COMPLETER** |4 | |
-|  **A COMPLETER** |6 | |
+# 4. Observation
 
 
 Comparaison finale : 
 
-On observe aisement une différence notable de temps d'execution entre Pig et Spark : 
+On observe une légère différence de temps d'execution entre Pig et PySpark, le plus rapide étant PySpark avec partitionnement 
 
-
-PySpark :
-
-Temps d'exécution pour deux noeuds : **A COMPLETER**
-
-Rapidité : PySpark démontre une grande efficacité à traiter les données à grande vitesse. Cela en fait un choix puissant pour des charges de travail de traitement de données massives.
-
-
-Pig :
-
-Temps d'exécution : **A COMPLETER**
-
-Efficacité : Pig, en revanche, est notablement plus lent avec un temps d'exécution de 191.12 secondes. Ses performances sont plus modestes par rapport à PySpark, ce qui peut être un facteur important à prendre en compte pour des tâches nécessitant des performances élevées.
-
-
-
-# 4. Observation
-
-##### **A COMPLETER + FAIRE GRAPHIQUE**
-
+![alt text](https://github.com/SofianeCDL/ProjetPageRank/blob/main/Graph.png)
 
 Pig, en revanche, s'est avéré plus simple à utiliser et à comprendre pour les utilisateurs familiarisés avec SQL et le langage Pig Latin.
 
