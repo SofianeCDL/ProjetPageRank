@@ -101,17 +101,17 @@ Nous avons testés avec le fichier de grande taille, 800mo. Cette fois-ci, on jo
 | `40 min 54 s` | 4 | 
 | `36 min 22 s` | 5 | 
 
-| Spark sans partitionnement| Nombre de noeuds      
+| PySpark sans partitionnement| Nombre de noeuds      
 | :------- | :------------------------- | 
 | `46 min 18 s` |3 | 
 | `40 min 32 s` |4 |
 | `36 min 24 s` |5 |
 
-| Spark avec partitionnement| Nombre de noeuds      
+| PySpark avec partitionnement| Nombre de noeuds      
 | :------- | :------------------------- | 
 | `33 min 39 s `  |3 |
 | `31 min 55 s`   |4 |
-| `31 min 03 s`   |6 |
+| `31 min 03 s`   |5 |
 
 
 # 4. Observation
@@ -123,19 +123,17 @@ On observe une légère différence de temps d'execution entre Pig et PySpark, l
 
 ![alt text](https://github.com/SofianeCDL/ProjetPageRank/blob/main/Graph.png)
 
-Pig, en revanche, s'est avéré plus simple à utiliser et à comprendre pour les utilisateurs familiarisés avec SQL et le langage Pig Latin.
+On observe alors que PySpark avec partitionnement affiche les meilleures performances parmi les trois configurations présentées. On peut ainsi penser que le partitionnement joue un rôle essentiel en permettant une répartition efficace des charges de travail. On voit cependant que l'ajoute de noeud ne réduit que de peu la vitesse d'execution.
+
+PySpark sans partitionnement démontre des performances plus rapide que Pig mais de peu contrairement à nos essais préliminaires pour un nombre de nœuds équivalent.
 
 
 # Conclusion finale 
 
-##### **A COMPLETER**
+Cette comparaison met en évidence la capacité de PySpark et Pig avec partitionnement à traiter rapidement des tâches. Globalement, l'ajout de nœuds (par exemple, en passant de 3 à 6 nœuds) améliore dans tous les cas les performances.
+PySpark sans partitionnement est légèrement plus rapide que Pig qui lui est le moins performant en termes de vitesse d'exécution. Le choix entre les deux technologies doit être basé sur les besoins spécifiques de chaque projet et sur la balance entre la simplicité d'utilisation de Pig et la vitesse de PySpark. D'après nos tests et nos observations, Pig et PySpark se valent, on rapelle que pour 5 noeuds les temps d'executions étaint presque semblables.
 
-Cette comparaison met en évidence la capacité de PySpark à traiter rapidement des tâches de traitement de données complexes, ce qui en fait un choix privilégié pour les environnements nécessitant des performances élevées. Pig, bien que fonctionnel, est moins performant en termes de vitesse d'exécution. Le choix entre les deux technologies doit être basé sur les besoins spécifiques de chaque projet et sur la balance entre la simplicité d'utilisation de Pig et la vitesse de PySpark.
-
-
-Cette étude préliminaire suggère que le choix entre Apache Pig et Apache Spark pour le calcul du PageRank dépend des besoins spécifiques du projet. Si la performance est cruciale, Spark peut être la meilleure option. Si la simplicité et la familiarité avec Pig Latin sont des priorités, Pig peut être une alternative viable.
-
-Il est important de noter que ces conclusions sont basées sur une implémentation spécifique de l'algorithme PageRank et que les résultats peuvent varier en fonction de la nature des données, de la configuration matérielle et des besoins du projet.
+En résumé, si les performances sont un critère essentiel, l'utilisation de PySpark avec partitionnement semble être la meilleure option parmi les trois, avec des temps d'exécution significativement plus courts. Cependant, le choix entre Pig et PySpark sans partitionnement dépendra des besoins spécifiques de votre cas d'utilisation.
 
 
 
