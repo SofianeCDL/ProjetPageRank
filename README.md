@@ -81,17 +81,23 @@ Résultats :
 Visible en brut sous format txt au lancement du programme dans le fichier *result_data.txt*. 
 Les configurations de bases étant fixées à 2, 4 et 5 noeud avec *lddm_data/small_page_links.nt 3* comme jeu de données. 
 
-| Pig | Nombre de noeuds      | En-tête
-| :-------- | :------------------------- | :------- |
-| `191.1238124370575` |2 | |
-| `` | 4 | |
-| `` | 6 | |
+| Pig | Nombre de noeuds |   
+| :-------- | :------------------------- |
+| `49 min 35 s` | 3 | 
+| `40 min 54 s` | 4 | 
+| `36 min 22 s` | 5 | 
 
-| Spark     | Nombre de noeuds      | En-tête
-| :------- | :------------------------- | :------- |
-|  `38.01116800308227` |2 | |
-| `` |4 | |
-|  `` |6 | |
+| Spark sans partitionnement| Nombre de noeuds      
+| :------- | :------------------------- | 
+| `46 min 18 s` |3 | 
+| `40 min 32 s` |4 |
+| `36 min 24 s` |5 |
+
+| Spark avec partitionnement| Nombre de noeuds      
+| :------- | :------------------------- | 
+| `33 min 39 s `  |3 |
+| `31 min 55 s`   |4 |
+| `31 min 03 s`   |6 |
 
 
 Comparaison préliminaire : 
