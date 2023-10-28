@@ -15,9 +15,9 @@ Projet réalisé dans le cadre de l’UE de Gestion des données distribuées à
 
 ## Authors
 
-- [@LouAnneSVTR](https://www.github.com/LouAnneSVTR)
-- [@SofianeCDL](https://www.github.com/LouAnneSVTR](https://github.com/SofianeCDL))
-- [@Stevehunn](https://www.github.com/Stevehunn)
+- Lou-Anne Sauvêtre [@LouAnneSVTR](https://www.github.com/LouAnneSVTR)
+- Sofiane Couëdel [@SofianeCDL](https://www.github.com/LouAnneSVTR](https://github.com/SofianeCDL))
+- Nicolas Bitaillou [@Stevehunn](https://www.github.com/Stevehunn)
 
 
 ## Introduction
